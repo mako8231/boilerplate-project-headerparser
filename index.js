@@ -20,8 +20,28 @@ app.get('/', function (req, res) {
 });
 
 // your first API endpoint...
-app.get('/api/hello', function (req, res) {
-  res.json({ greeting: 'hello API' });
+app.get('/api/whoami', function (req, res) {
+  const headers = req.rawHeaders
+  let output = {
+    ipaddress:"159.20.14.100",
+    language:"en-US,en;q=0.5",
+    software:"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:50.0) Gecko/20100101 Firefox/50.0"
+  }
+
+
+  output.ipaddress = req.ip.replace("::ffff:", '');
+  for (let i = 0; i<headers.length; i++){
+    switch(headers[i]) {
+      case 'User-Agent':
+        output.software = headers[i+1];  
+      break;
+
+      case 'Accept-Language':
+        output.language = headers[i+1];  
+      break;
+    }
+  }
+  res.json(output);
 });
 
 // listen for requests :)
